@@ -14,7 +14,98 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      comparison_history: {
+        Row: {
+          ai_analysis: Json | null
+          created_at: string | null
+          id: string
+          search_query: string
+        }
+        Insert: {
+          ai_analysis?: Json | null
+          created_at?: string | null
+          id?: string
+          search_query: string
+        }
+        Update: {
+          ai_analysis?: Json | null
+          created_at?: string | null
+          id?: string
+          search_query?: string
+        }
+        Relationships: []
+      }
+      price_data: {
+        Row: {
+          available: boolean | null
+          delivery_time: string | null
+          id: string
+          last_updated: string | null
+          platform: string
+          price: number
+          product_id: string | null
+          trend: string | null
+        }
+        Insert: {
+          available?: boolean | null
+          delivery_time?: string | null
+          id?: string
+          last_updated?: string | null
+          platform: string
+          price: number
+          product_id?: string | null
+          trend?: string | null
+        }
+        Update: {
+          available?: boolean | null
+          delivery_time?: string | null
+          id?: string
+          last_updated?: string | null
+          platform?: string
+          price?: number
+          product_id?: string | null
+          trend?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "price_data_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          category: string
+          created_at: string | null
+          id: string
+          image_emoji: string | null
+          name: string
+          quantity: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          id?: string
+          image_emoji?: string | null
+          name: string
+          quantity?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          id?: string
+          image_emoji?: string | null
+          name?: string
+          quantity?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
