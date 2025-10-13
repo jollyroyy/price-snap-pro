@@ -1,1 +1,7 @@
 project_id = "exmiaydhmdivancgoott"
+
+[functions.compare-prices]
+verify_jwt = false
+
+[functions.get-products]
+verify_jwt = false

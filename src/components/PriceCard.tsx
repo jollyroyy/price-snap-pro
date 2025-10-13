@@ -7,8 +7,8 @@ interface PriceData {
   platform: string;
   price: number;
   available: boolean;
-  trend?: "up" | "down";
-  deliveryTime?: string;
+  trend?: "up" | "down" | "stable";
+  delivery_time?: string;
 }
 
 interface PriceCardProps {
@@ -47,8 +47,8 @@ const PriceCard = ({ name, image, quantity, prices, lowestPlatform }: PriceCardP
             >
               <div className="flex items-center gap-2">
                 <span className="font-medium text-sm">{price.platform}</span>
-                {price.deliveryTime && (
-                  <span className="text-xs text-muted-foreground">• {price.deliveryTime}</span>
+                {price.delivery_time && (
+                  <span className="text-xs text-muted-foreground">• {price.delivery_time}</span>
                 )}
               </div>
               <div className="flex items-center gap-2">
