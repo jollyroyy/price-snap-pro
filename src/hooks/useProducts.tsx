@@ -44,3 +44,16 @@ export const useComparePrice = () => {
 
   return { comparePrice };
 };
+
+export const useFetchLivePrice = () => {
+  const fetchLivePrice = async (productName: string) => {
+    const { data, error } = await supabase.functions.invoke("fetch-live-prices", {
+      body: { productName },
+    });
+
+    if (error) throw error;
+    return data;
+  };
+
+  return { fetchLivePrice };
+};

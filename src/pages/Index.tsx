@@ -6,7 +6,7 @@ import ComparisonTable from "@/components/ComparisonTable";
 import DealsCarousel from "@/components/DealsCarousel";
 import TrendingSearches from "@/components/TrendingSearches";
 import AIInsights from "@/components/AIInsights";
-import { useProducts, useComparePrice, Product } from "@/hooks/useProducts";
+import { useProducts, useComparePrice, useFetchLivePrice, Product } from "@/hooks/useProducts";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
@@ -18,33 +18,41 @@ const Index = () => {
   
   const { data: allProducts, isLoading } = useProducts();
   const { comparePrice } = useComparePrice();
+  const { fetchLivePrice } = useFetchLivePrice();
   const { toast } = useToast();
 
   const handleSearch = async (query: string) => {
     setIsSearching(true);
     setSearchQuery(query);
-    
+
     try {
-      const result = await comparePrice(query);
-      setSearchResults(result.products);
-      setAiInsights(result.aiInsights);
-      
-      if (result.products.length === 0) {
-        toast({
-          title: "No products found",
-          description: `No products matching "${query}" were found.`,
-        });
-      } else {
-        toast({
-          title: "Analysis complete",
-          description: `Found ${result.products.length} products with AI insights`,
-        });
-      }
+      const liveData = await fetchLivePrice(query);
+
+      const product: Product = {
+        id: `live-${Date.now()}`,
+        name: liveData.name,
+        category: "Live Search",
+        image_emoji: "🔍",
+        quantity: "Real-time data",
+        price_data: liveData.prices
+      };
+
+      setSearchResults([product]);
+
+      const bestPrice = liveData.bestPrice;
+      const savings = liveData.avgPrice - bestPrice.price;
+      const aiInsightsText = `Best Deal: ${bestPrice.platform} at ₹${bestPrice.price}. Average price across platforms: ₹${liveData.avgPrice}. You save ₹${savings.toFixed(2)} (${((savings/liveData.avgPrice)*100).toFixed(1)}%) by choosing ${bestPrice.platform}.`;
+      setAiInsights(aiInsightsText);
+
+      toast({
+        title: "Live prices fetched",
+        description: `Best price: ${bestPrice.platform} at ₹${bestPrice.price}`,
+      });
     } catch (error) {
       console.error("Search error:", error);
       toast({
         title: "Search failed",
-        description: "Unable to search products. Please try again.",
+        description: "Unable to fetch live prices. Please try again.",
         variant: "destructive",
       });
     } finally {
