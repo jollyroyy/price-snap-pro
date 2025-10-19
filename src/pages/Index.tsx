@@ -90,7 +90,7 @@ const Index = () => {
             </div>
           ) : displayProducts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {displayProducts.map((product) => (
+              {displayProducts.slice(0, 1).map((product) => (
                 <PriceCard
                   key={product.id}
                   name={product.name}
