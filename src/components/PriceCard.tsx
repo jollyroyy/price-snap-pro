@@ -23,6 +23,9 @@ const platformColors: Record<string, string> = {
   Blinkit: "blinkit",
   Zepto: "zepto",
   Instamart: "instamart",
+  "Flipkart Minutes": "flipkart",
+  "Amazon Minutes": "amazon",
+  "Big Basket": "bigbasket",
 };
 
 const PriceCard = ({ name, image, quantity, prices, lowestPlatform }: PriceCardProps) => {
