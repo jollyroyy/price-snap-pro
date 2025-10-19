@@ -16,7 +16,11 @@ interface Product {
 
 const sampleProducts = ["Milk 1L", "Bread", "Tomatoes 500g", "Rice 1kg"];
 
-const ComparisonTable = () => {
+interface ComparisonTableProps {
+  selectedCity: string;
+}
+
+const ComparisonTable = ({ selectedCity }: ComparisonTableProps) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const { fetchLivePrice } = useFetchLivePrice();
@@ -27,7 +31,7 @@ const ComparisonTable = () => {
       const results = await Promise.all(
         sampleProducts.map(async (productName) => {
           try {
-            const data = await fetchLivePrice(productName);
+            const data = await fetchLivePrice(productName, selectedCity);
             return {
               name: productName,
               blinkit: data.prices.find((p: any) => p.platform === "Blinkit")?.price || 0,
@@ -56,7 +60,7 @@ const ComparisonTable = () => {
       setLoading(false);
     };
     fetchAllPrices();
-  }, []);
+  }, [selectedCity]);
 
   const totals = {
     blinkit: products.reduce((sum, p) => sum + p.blinkit, 0),

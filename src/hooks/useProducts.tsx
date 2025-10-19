@@ -50,9 +50,9 @@ export const useComparePrice = () => {
 };
 
 export const useFetchLivePrice = () => {
-  const fetchLivePrice = async (productName: string) => {
+  const fetchLivePrice = async (productName: string, city?: string) => {
     const { data, error } = await supabase.functions.invoke("fetch-live-prices", {
-      body: { productName },
+      body: { productName, city },
     });
 
     if (error) throw error;

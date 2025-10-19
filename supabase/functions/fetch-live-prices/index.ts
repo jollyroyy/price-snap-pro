@@ -23,6 +23,17 @@ interface ProductResult {
   avgPrice: number;
 }
 
+const cityMultipliers: Record<string, number> = {
+  "Mumbai": 1.15,
+  "Delhi": 1.10,
+  "Bangalore": 1.12,
+  "Hyderabad": 1.05,
+  "Chennai": 1.08,
+  "Kolkata": 1.03,
+  "Pune": 1.10,
+  "Ahmedabad": 1.06,
+};
+
 function getRandomCouponCode(platform: string): { code: string; discount: number } {
   const coupons = [
     { code: "SAVE10", discount: 0.10 },
@@ -34,8 +45,10 @@ function getRandomCouponCode(platform: string): { code: string; discount: number
   return coupons[Math.floor(Math.random() * coupons.length)];
 }
 
-async function fetchBlinkitPrice(productName: string): Promise<PriceData> {
-  const originalPrice = parseFloat((Math.random() * 100 + 50).toFixed(2));
+async function fetchBlinkitPrice(productName: string, city: string): Promise<PriceData> {
+  const basePrice = Math.random() * 100 + 50;
+  const cityMultiplier = cityMultipliers[city] || 1.0;
+  const originalPrice = parseFloat((basePrice * cityMultiplier).toFixed(2));
   const coupon = getRandomCouponCode("Blinkit");
   const discountAmount = originalPrice * coupon.discount;
   const finalPrice = originalPrice - discountAmount;
@@ -51,8 +64,10 @@ async function fetchBlinkitPrice(productName: string): Promise<PriceData> {
   };
 }
 
-async function fetchZeptoPrice(productName: string): Promise<PriceData> {
-  const originalPrice = parseFloat((Math.random() * 100 + 45).toFixed(2));
+async function fetchZeptoPrice(productName: string, city: string): Promise<PriceData> {
+  const basePrice = Math.random() * 100 + 45;
+  const cityMultiplier = cityMultipliers[city] || 1.0;
+  const originalPrice = parseFloat((basePrice * cityMultiplier).toFixed(2));
   const coupon = getRandomCouponCode("Zepto");
   const discountAmount = originalPrice * coupon.discount;
   const finalPrice = originalPrice - discountAmount;
@@ -68,8 +83,10 @@ async function fetchZeptoPrice(productName: string): Promise<PriceData> {
   };
 }
 
-async function fetchInstamartPrice(productName: string): Promise<PriceData> {
-  const originalPrice = parseFloat((Math.random() * 100 + 52).toFixed(2));
+async function fetchInstamartPrice(productName: string, city: string): Promise<PriceData> {
+  const basePrice = Math.random() * 100 + 52;
+  const cityMultiplier = cityMultipliers[city] || 1.0;
+  const originalPrice = parseFloat((basePrice * cityMultiplier).toFixed(2));
   const coupon = getRandomCouponCode("Instamart");
   const discountAmount = originalPrice * coupon.discount;
   const finalPrice = originalPrice - discountAmount;
@@ -85,8 +102,10 @@ async function fetchInstamartPrice(productName: string): Promise<PriceData> {
   };
 }
 
-async function fetchDmartPrice(productName: string): Promise<PriceData> {
-  const originalPrice = parseFloat((Math.random() * 95 + 48).toFixed(2));
+async function fetchDmartPrice(productName: string, city: string): Promise<PriceData> {
+  const basePrice = Math.random() * 95 + 48;
+  const cityMultiplier = cityMultipliers[city] || 1.0;
+  const originalPrice = parseFloat((basePrice * cityMultiplier).toFixed(2));
   const coupon = getRandomCouponCode("DMart");
   const discountAmount = originalPrice * coupon.discount;
   const finalPrice = originalPrice - discountAmount;
@@ -102,8 +121,10 @@ async function fetchDmartPrice(productName: string): Promise<PriceData> {
   };
 }
 
-async function fetchBigBasketPrice(productName: string): Promise<PriceData> {
-  const originalPrice = parseFloat((Math.random() * 98 + 50).toFixed(2));
+async function fetchBigBasketPrice(productName: string, city: string): Promise<PriceData> {
+  const basePrice = Math.random() * 98 + 50;
+  const cityMultiplier = cityMultipliers[city] || 1.0;
+  const originalPrice = parseFloat((basePrice * cityMultiplier).toFixed(2));
   const coupon = getRandomCouponCode("BigBasket");
   const discountAmount = originalPrice * coupon.discount;
   const finalPrice = originalPrice - discountAmount;
@@ -119,8 +140,10 @@ async function fetchBigBasketPrice(productName: string): Promise<PriceData> {
   };
 }
 
-async function fetchFlipkartMinutesPrice(productName: string): Promise<PriceData> {
-  const originalPrice = parseFloat((Math.random() * 102 + 51).toFixed(2));
+async function fetchFlipkartMinutesPrice(productName: string, city: string): Promise<PriceData> {
+  const basePrice = Math.random() * 102 + 51;
+  const cityMultiplier = cityMultipliers[city] || 1.0;
+  const originalPrice = parseFloat((basePrice * cityMultiplier).toFixed(2));
   const coupon = getRandomCouponCode("Flipkart");
   const discountAmount = originalPrice * coupon.discount;
   const finalPrice = originalPrice - discountAmount;
@@ -136,8 +159,10 @@ async function fetchFlipkartMinutesPrice(productName: string): Promise<PriceData
   };
 }
 
-async function fetchAmazonMinutesPrice(productName: string): Promise<PriceData> {
-  const originalPrice = parseFloat((Math.random() * 105 + 53).toFixed(2));
+async function fetchAmazonMinutesPrice(productName: string, city: string): Promise<PriceData> {
+  const basePrice = Math.random() * 105 + 53;
+  const cityMultiplier = cityMultipliers[city] || 1.0;
+  const originalPrice = parseFloat((basePrice * cityMultiplier).toFixed(2));
   const coupon = getRandomCouponCode("Amazon");
   const discountAmount = originalPrice * coupon.discount;
   const finalPrice = originalPrice - discountAmount;
@@ -162,7 +187,7 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const { productName } = await req.json();
+    const { productName, city = "Mumbai" } = await req.json();
 
     if (!productName) {
       return new Response(
@@ -175,13 +200,13 @@ Deno.serve(async (req: Request) => {
     }
 
     const [blinkitPrice, zeptoPrice, instamartPrice, dmartPrice, bigBasketPrice, flipkartPrice, amazonPrice] = await Promise.all([
-      fetchBlinkitPrice(productName),
-      fetchZeptoPrice(productName),
-      fetchInstamartPrice(productName),
-      fetchDmartPrice(productName),
-      fetchBigBasketPrice(productName),
-      fetchFlipkartMinutesPrice(productName),
-      fetchAmazonMinutesPrice(productName),
+      fetchBlinkitPrice(productName, city),
+      fetchZeptoPrice(productName, city),
+      fetchInstamartPrice(productName, city),
+      fetchDmartPrice(productName, city),
+      fetchBigBasketPrice(productName, city),
+      fetchFlipkartMinutesPrice(productName, city),
+      fetchAmazonMinutesPrice(productName, city),
     ]);
 
     const prices = [blinkitPrice, zeptoPrice, instamartPrice, dmartPrice, bigBasketPrice, flipkartPrice, amazonPrice].filter(

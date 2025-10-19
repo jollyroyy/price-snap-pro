@@ -15,18 +15,30 @@ const Index = () => {
   const [aiInsights, setAiInsights] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isSearching, setIsSearching] = useState(false);
+  const [selectedCity, setSelectedCity] = useState<string>("Mumbai");
   
   const { data: allProducts, isLoading } = useProducts();
   const { comparePrice } = useComparePrice();
   const { fetchLivePrice } = useFetchLivePrice();
   const { toast } = useToast();
 
+  const handleCityChange = (city: string) => {
+    setSelectedCity(city);
+    toast({
+      title: "Location updated",
+      description: `Prices updated for ${city}`,
+    });
+    if (searchQuery) {
+      handleSearch(searchQuery);
+    }
+  };
+
   const handleSearch = async (query: string) => {
     setIsSearching(true);
     setSearchQuery(query);
 
     try {
-      const liveData = await fetchLivePrice(query);
+      const liveData = await fetchLivePrice(query, selectedCity);
 
       const product: Product = {
         id: `live-${Date.now()}`,
@@ -72,7 +84,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header selectedCity={selectedCity} onCityChange={handleCityChange} />
       <HeroSearch onSearch={handleSearch} isSearching={isSearching} />
 
       {aiInsights && (
@@ -117,7 +129,7 @@ const Index = () => {
         </div>
       </section>
 
-      <ComparisonTable />
+      <ComparisonTable selectedCity={selectedCity} />
       <DealsCarousel />
       <TrendingSearches />
 

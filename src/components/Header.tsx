@@ -1,7 +1,31 @@
-import { Search, User } from "lucide-react";
+import { Search, User, MapPin } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
-const Header = () => {
+interface HeaderProps {
+  selectedCity: string;
+  onCityChange: (city: string) => void;
+}
+
+const cities = [
+  "Mumbai",
+  "Delhi",
+  "Bangalore",
+  "Hyderabad",
+  "Chennai",
+  "Kolkata",
+  "Pune",
+  "Ahmedabad",
+];
+
+const Header = ({ selectedCity, onCityChange }: HeaderProps) => {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
@@ -23,9 +47,31 @@ const Header = () => {
             </div>
           </div>
 
-          <button className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary transition-smooth">
-            <User className="h-5 w-5 text-foreground" />
-          </button>
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <MapPin className="h-4 w-4" />
+                  <span className="hidden sm:inline">{selectedCity}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                {cities.map((city) => (
+                  <DropdownMenuItem
+                    key={city}
+                    onClick={() => onCityChange(city)}
+                    className={selectedCity === city ? "bg-accent" : ""}
+                  >
+                    {city}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <button className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary transition-smooth">
+              <User className="h-5 w-5 text-foreground" />
+            </button>
+          </div>
         </div>
       </div>
     </header>
