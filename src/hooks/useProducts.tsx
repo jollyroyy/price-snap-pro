@@ -4,9 +4,13 @@ import { supabase } from "@/integrations/supabase/client";
 export interface PriceData {
   platform: string;
   price: number;
+  originalPrice: number;
+  couponCode: string;
+  discount: number;
   available: boolean;
   delivery_time?: string;
   trend?: "up" | "down" | "stable";
+  url?: string;
 }
 
 export interface Product {

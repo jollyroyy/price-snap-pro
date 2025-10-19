@@ -1,11 +1,14 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { TrendingDown, TrendingUp } from "lucide-react";
+import { TrendingDown, TrendingUp, Tag } from "lucide-react";
 
 interface PriceData {
   platform: string;
   price: number;
+  originalPrice?: number;
+  couponCode?: string;
+  discount?: number;
   available: boolean;
   trend?: "up" | "down" | "stable";
   delivery_time?: string;
@@ -46,27 +49,41 @@ const PriceCard = ({ name, image, quantity, prices, lowestPlatform }: PriceCardP
           {prices.map((price) => (
             <div
               key={price.platform}
-              className="flex items-center justify-between p-3 rounded-lg bg-secondary/50 border border-border"
+              className="p-3 rounded-lg bg-secondary/50 border border-border"
             >
-              <div className="flex items-center gap-2">
-                <span className="font-medium text-sm">{price.platform}</span>
-                {price.delivery_time && (
-                  <span className="text-xs text-muted-foreground">• {price.delivery_time}</span>
-                )}
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-sm">{price.platform}</span>
+                  {price.delivery_time && (
+                    <span className="text-xs text-muted-foreground">• {price.delivery_time}</span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  {price.trend && (
+                    price.trend === "down" ? (
+                      <TrendingDown className="h-4 w-4 text-accent" />
+                    ) : (
+                      <TrendingUp className="h-4 w-4 text-destructive" />
+                    )
+                  )}
+                  <div className="text-right">
+                    {price.originalPrice && (
+                      <span className="text-xs text-muted-foreground line-through block">₹{price.originalPrice.toFixed(2)}</span>
+                    )}
+                    <span className="font-bold text-lg">₹{price.price.toFixed(2)}</span>
+                  </div>
+                  {price.platform === lowestPlatform && (
+                    <Badge className="bg-accent text-accent-foreground">Lowest</Badge>
+                  )}
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                {price.trend && (
-                  price.trend === "down" ? (
-                    <TrendingDown className="h-4 w-4 text-accent" />
-                  ) : (
-                    <TrendingUp className="h-4 w-4 text-destructive" />
-                  )
-                )}
-                <span className="font-bold text-lg">₹{price.price}</span>
-                {price.platform === lowestPlatform && (
-                  <Badge className="bg-accent text-accent-foreground">Lowest</Badge>
-                )}
-              </div>
+              {price.couponCode && (
+                <div className="flex items-center gap-1 text-xs text-accent">
+                  <Tag className="h-3 w-3" />
+                  <span className="font-mono font-semibold">{price.couponCode}</span>
+                  <span className="text-muted-foreground">• Save ₹{price.discount?.toFixed(2)}</span>
+                </div>
+              )}
             </div>
           ))}
         </div>

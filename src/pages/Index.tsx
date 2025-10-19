@@ -41,12 +41,12 @@ const Index = () => {
 
       const bestPrice = liveData.bestPrice;
       const savings = liveData.avgPrice - bestPrice.price;
-      const aiInsightsText = `Best Deal: ${bestPrice.platform} at ₹${bestPrice.price}. Average price across platforms: ₹${liveData.avgPrice}. You save ₹${savings.toFixed(2)} (${((savings/liveData.avgPrice)*100).toFixed(1)}%) by choosing ${bestPrice.platform}.`;
+      const aiInsightsText = `Best Deal: ${bestPrice.platform} at ₹${bestPrice.price} with coupon ${bestPrice.couponCode}. Average price across platforms: ₹${liveData.avgPrice}. You save ₹${savings.toFixed(2)} (${((savings/liveData.avgPrice)*100).toFixed(1)}%) by choosing ${bestPrice.platform}.`;
       setAiInsights(aiInsightsText);
 
       toast({
         title: "Live prices fetched",
-        description: `Best price: ${bestPrice.platform} at ₹${bestPrice.price}`,
+        description: `Best: ${bestPrice.platform} ₹${bestPrice.price} (${bestPrice.couponCode})`,
       });
     } catch (error) {
       console.error("Search error:", error);
